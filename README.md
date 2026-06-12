@@ -18,10 +18,9 @@
 ## 0:00 – 0:45 · Sissejuhatus
 
 **[ÜTLE]**
-> "Tere! Selles videos loon **sama andmebaasi struktuuri kahes erinevas andmebaasimootoris** — PostgreSQL ja MySQL-iga ühilduv MariaDB.
-> Mõlemasse teen sama andmebaasi *kool*, samad tabelid *klass* ja *opilane*, samade veergude ja andmetüüpidega, sealhulgas ühe DATE-väljaga.
-> Sisestan mõlemasse samad andmed, teen mõlemas päringuid ja lõpuks näitan **konkreetseid erinevusi**, mida ma töö käigus nägin — kus üks mootor on mugavam ja kus teine.
-> Alustan PostgreSQL-ist."
+> "Tere! Loon **sama andmebaasi struktuuri kahes mootoris** — PostgreSQL ja MySQL-iga ühilduv MariaDB.
+> Mõlemasse teen andmebaasi *kool*, tabelid *klass* ja *opilane*, samade tüüpidega (sh üks DATE-väli),
+> sisestan samad andmed, teen samad päringud ja näitan lõpus **konkreetseid erinevusi**. Alustan PostgreSQL-ist."
 
 ---
 
@@ -30,7 +29,7 @@
 ## 0:45 – 1:30 · Käivitan ja ühendun
 
 **[ÜTLE]**
-> "Kontrollin, et PostgreSQL teenus töötab, ja ühendun. Kui teenust pole, käivitan selle."
+> "Kontrollin, et teenus käib, ja ühendun."
 
 **[KIRJUTA]**
 ```bash
@@ -41,12 +40,12 @@ sudo -u postgres psql
 > *(Kui PostgreSQL pole paigaldatud: `sudo dnf install -y postgresql-server postgresql && sudo postgresql-setup --initdb`)*
 
 **[ÜTLE]**
-> "Viip `postgres=#` näitab, et olen ühendatud — ühendus toimib."
+> "Viip `postgres=#` — ühendus toimib."
 
 ## 1:30 – 3:15 · Loon andmebaasi, tabelid, andmed, päringud
 
 **[ÜTLE]**
-> "Loon andmebaasi *kool* ja lähen sinna sisse."
+> "Loon andmebaasi *kool*."
 
 **[KIRJUTA]**
 ```sql
@@ -55,7 +54,7 @@ CREATE DATABASE kool;
 ```
 
 **[ÜTLE]**
-> "Loon kaks tabelit. Pane tähele veergude tüüpe: `id` on automaatne number — PostgreSQL-is kirjutan selle **SERIAL**. `synniaeg` on **DATE**, `aktiivne` on **BOOLEAN**."
+> "Kaks tabelit. Pane tüübid tähele: `id` on automaatne number — Postgresis **SERIAL**; `synniaeg` on **DATE**, `aktiivne` **BOOLEAN**."
 
 **[KIRJUTA]**
 ```sql
@@ -75,7 +74,7 @@ CREATE TABLE opilane (
 ```
 
 **[ÜTLE]**
-> "Sisestan samad näidisandmed, mida kasutan ka teises mootoris."
+> "Samad näidisandmed, mida kasutan ka teises mootoris."
 
 **[KIRJUTA]**
 ```sql
@@ -88,7 +87,7 @@ INSERT INTO opilane (nimi, synniaeg, keskmine_hinne, aktiivne, klass_id) VALUES
 ```
 
 **[ÜTLE]**
-> "Teen kaks päringut. Esimene tagastab kõik õpilased, teine kasutab DATE-välja — kõik, kes sündinud enne 2008. aastat."
+> "Kaks päringut: kõik õpilased, ja DATE-väljaga — enne 2008. aastat sündinud."
 
 **[KIRJUTA]**
 ```sql
@@ -97,7 +96,7 @@ SELECT nimi, synniaeg FROM opilane WHERE synniaeg < '2008-01-01';
 ```
 
 **[ÜTLE]**
-> "Mõlemad päringud tagastavad tulemuse. PostgreSQL pool on valmis. Väljun ja lähen MySQL-i poole."
+> "Mõlemad töötavad. Postgres valmis — lähen MySQL-i."
 
 **[KIRJUTA]**
 ```sql
@@ -111,7 +110,7 @@ SELECT nimi, synniaeg FROM opilane WHERE synniaeg < '2008-01-01';
 ## 3:15 – 4:15 · Paigaldan, käivitan ja ühendun
 
 **[ÜTLE]**
-> "Nüüd MariaDB, mis on MySQL-iga ühilduv. Paigaldan serveri, käivitan teenuse ja ühendun."
+> "Nüüd MariaDB, mis on MySQL-iga ühilduv. Paigaldan, käivitan, ühendun."
 
 **[KIRJUTA]**
 ```bash
@@ -126,12 +125,12 @@ sudo mysql
 > (võta logist ajutine parool) → `mysql -u root -p` → `ALTER USER 'root'@'localhost' IDENTIFIED BY 'UusParool1!';`
 
 **[ÜTLE]**
-> "Viip `MariaDB [(none)]>` näitab, et ühendus toimib."
+> "Viip `MariaDB [(none)]>` — ühendus toimib."
 
 ## 4:15 – 6:00 · Loon SAMA andmebaasi, tabelid, andmed, päringud
 
 **[ÜTLE]**
-> "Teen sama andmebaasi *kool* — täpselt sama nimi nagu PostgreSQL-is."
+> "Sama andmebaas *kool* — täpselt sama nimi."
 
 **[KIRJUTA]**
 ```sql
@@ -140,7 +139,7 @@ USE kool;
 ```
 
 **[ÜTLE]**
-> "Sama skeem, samad veerud, samad tüübid. **Üks rida on paratamatult erinev:** automaatne id — MySQL-is kasutan **AUTO_INCREMENT**, mitte SERIAL. See on esimene erinevus, mille juurde hiljem tulen. Ülejäänud tüübid — VARCHAR, DATE, DECIMAL, BOOLEAN — kirjutan sõna-sõnalt samamoodi."
+> "Sama skeem ja tüübid. **Üks rida erineb:** automaatne id on siin **AUTO_INCREMENT**, mitte SERIAL — esimene erinevus. Ülejäänu sama."
 
 **[KIRJUTA]**
 ```sql
@@ -161,7 +160,7 @@ CREATE TABLE opilane (
 ```
 
 **[ÜTLE]**
-> "Sisestan täpselt samad andmed."
+> "Täpselt samad andmed."
 
 **[KIRJUTA]**
 ```sql
@@ -183,7 +182,7 @@ SELECT nimi, synniaeg FROM opilane WHERE synniaeg < '2008-01-01';
 ```
 
 **[ÜTLE]**
-> "Mõlemad tagastavad tulemuse, samad andmed nagu PostgreSQL-is. Skeem on mõlemas nähtavalt sama."
+> "Samad tulemused nagu Postgresis — skeem on nähtavalt sama."
 
 ---
 
@@ -192,10 +191,8 @@ SELECT nimi, synniaeg FROM opilane WHERE synniaeg < '2008-01-01';
 ## 6:00 – 7:00 · Erinevus 1 — automaatne id (SERIAL vs AUTO_INCREMENT)
 
 **[ÜTLE]**
-> "Esimene erinevus, mida ma juba nägin: **automaatne id-veerg kirjutatakse erinevalt.**
-> PostgreSQL-is on see `SERIAL`, MySQL-is `AUTO_INCREMENT`. Ma ei saanud sama CREATE TABLE lauset lihtsalt kopeerida — pidin selle ühe rea ümber kirjutama.
-> Kus kumb parem? MySQL-i `AUTO_INCREMENT` on minu meelest **loetavam ja lühem** — kohe näha, et veerg kasvab ise.
-> PostgreSQL-i `SERIAL` loob taustal eraldi *sequence'i*, mis annab rohkem **kontrolli** — saan numbri jada eraldi hallata ja lähtestada. Üks on mugavam, teine paindlikum."
+> "Esimene erinevus: automaatne id. Postgresis **SERIAL**, MySQL-is **AUTO_INCREMENT** — selle ühe rea pidin ümber kirjutama, kopeerida ei saanud.
+> AUTO_INCREMENT on lühem ja loetavam; SERIAL loob taustal eraldi *sequence'i* ja annab rohkem kontrolli. **MySQL = mugavam, Postgres = paindlikum.**"
 
 **[KIRJUTA]** *(näita mõlema tabeli struktuuri kõrvuti — vaheta aknaid)*
 ```sql
@@ -206,28 +203,26 @@ DESCRIBE opilane;
 ## 7:00 – 8:30 · Erinevus 2 — teksti tõstutundlikkus (collation)
 
 **[ÜTLE]**
-> "Teine erinevus on minu lemmik, sest see on otse näha. Otsin mõlemast õpilast nimega 'mari maasikas' — **kirjutan teadlikult väikeste tähtedega**, kuigi andmetes on 'Mari Maasikas' suure algustähega."
+> "Teine erinevus on otse näha. Otsin nime 'mari maasikas' **väikeste tähtedega**, kuigi andmetes on suur algustäht."
 
 **[KIRJUTA]** *(MySQL/MariaDB pool)*
 ```sql
 SELECT * FROM opilane WHERE nimi = 'mari maasikas';
 ```
 **[ÜTLE]**
-> "MySQL **tagastab rea** — talle ei lähe tähesuurus korda, sest vaikimisi sortimisreegel on tõstutundetu."
+> "MySQL **tagastab rea** — vaikecollation on tõstutundetu."
 
 **[KIRJUTA]** *(PostgreSQL pool — `sudo -u postgres psql -d kool`)*
 ```sql
 SELECT * FROM opilane WHERE nimi = 'mari maasikas';
 ```
 **[ÜTLE]**
-> "PostgreSQL **ei tagasta ühtegi rida** — tema on tõstutundlik ja 'mari' ei ole sama mis 'Mari'.
-> Kus kumb parem? MySQL on **mugavam kasutaja otsingu jaoks** — ei pea muretsema tähesuuruse pärast.
-> PostgreSQL on **ettearvatavam ja täpsem** — ta võrdleb täpselt nii, nagu kirjutad, ja kui tahan tõstutundetut otsingut, ütlen seda ise (`ILIKE` või `LOWER()`). Üks on mugav vaikimisi, teine annab täpse kontrolli."
+> "Postgres **ei tagasta midagi** — tema on tõstutundlik, 'mari' ≠ 'Mari'. **MySQL = mugav otsinguks, Postgres = täpsem ja ettearvatavam** (vajadusel `ILIKE`/`LOWER()`)."
 
 ## 8:30 – 9:15 · (Boonus) Erinevus 3 — BOOLEAN salvestus
 
 **[ÜTLE]**
-> "Veel üks erinevus, mille märkasin: kirjutasin mõlemas `aktiivne BOOLEAN`, aga salvestus on erinev."
+> "Kolmas erinevus: kirjutasin mõlemas `BOOLEAN`, aga salvestus erineb."
 
 **[KIRJUTA]**
 ```sql
@@ -241,15 +236,13 @@ SELECT nimi, aktiivne FROM opilane;   -- väärtused 1 / 0
 SELECT nimi, aktiivne FROM opilane;   -- väärtused t / f
 ```
 **[ÜTLE]**
-> "MySQL muudab BOOLEAN-i tegelikult väikeseks täisarvuks `tinyint(1)` ja näitab 1 või 0. Sinna mahuks ka näiteks 5, mis pole päris tõeväärtus.
-> PostgreSQL-il on **päris boolean-tüüp**, mis lubab ainult tõene/väär ja näitab t/f. Siin on PostgreSQL **rangem ja turvalisem**, MySQL **paindlikum, aga lohakam**."
+> "MySQL teeb sellest `tinyint(1)` ja näitab 1/0 — sinna mahuks ka 5. Postgresil on päris boolean, t/f. **Postgres rangem, MySQL paindlikum, aga lohakam.**"
 
 ## 9:15 – 9:45 · Kokkuvõte
 
 **[ÜTLE]**
-> "Kokkuvõtteks: lõin sama skeemi — andmebaas *kool*, tabelid *klass* ja *opilane*, samad veerud, tüübid ja DATE-väli — kahes mootoris, sisestasin samad andmed ja tegin samad päringud.
-> Nägin kolme erinevust: automaatne id (SERIAL vs AUTO_INCREMENT), teksti tõstutundlikkus ja BOOLEAN-i salvestus.
-> Üldmulje: MySQL on tihti **mugavam vaikimisi**, PostgreSQL **rangem ja ettearvatavam**. Aitäh!"
+> "Kokkuvõtteks: sama skeem, samad andmed ja samad päringud kahes mootoris. Kolm erinevust: SERIAL vs AUTO_INCREMENT, tõstutundlikkus ja BOOLEAN-i salvestus.
+> Üldmulje: MySQL mugavam vaikimisi, Postgres rangem ja ettearvatavam. Aitäh!"
 
 ---
 
